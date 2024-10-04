@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="script.js">
+    <title>Gerenciamento de Notificações</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: auto; }
+        .notification { margin: 10px 0; }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerenciamento de Notificações</h1>
+        <form id="notificationForm">
+            <input type="text" id="message" placeholder="Mensagem" required />
+            <select id="priority" required>
+                <option value="">Selecione a prioridade</option>
+                <option value="Alta">Alta</option>
+                <option value="Baixa">Baixa</option>
+            </select>
+            <button type="submit">Enviar Notificação</button>
+        </form>
+        <h2>Notificações Enviadas</h2>
+        <div id="notifications"></div>
+        
+        <h2>Lista de Notificações</h2>
+        <ul id="notificationList">
+            <!-- As notificações simuladas serão adicionadas aqui -->
+        </ul>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("notificationForm").onsubmit = function(event) {
+            event.preventDefault();
+            const message = document.getElementById("message").value;
+            const priority = document.getElementById("priority").value;
+
+            fetch(`/api/notificacoes/enviar?message=${encodeURIComponent(message)}&priority=${encodeURIComponent(priority)}`, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("notifications").innerHTML += `<div class="notification">${data}</div>`;
+                document.getElementById("message").value = '';
+                document.getElementById("priority").value = '';
+            })
+            .catch(error => console.error('Erro ao enviar notificação:', error));
+        };
+    </script>
+</body>
+</html>
